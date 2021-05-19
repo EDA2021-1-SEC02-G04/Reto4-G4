@@ -35,24 +35,109 @@ operación solicitada
 """
 
 def printMenu():
+    print("\n")
+    print("*******************************************")
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información de buses de singapur")
+    print("3- Calcular componentes conectados")
+    print("4- Establecer estación base:")
+    print("5- Hay camino entre estacion base y estación: ")
+    print("6- Ruta de costo mínimo desde la estación base y estación: ")
+    print("7- Estación que sirve a mas rutas: ")
+    print("0- Salir")
+    print("*******************************************")
 
-catalog = None
+
+def optionTwo(cont):
+    print("\nCargando información de transporte de singapur ....")
+    controller.loadServices(cont, servicefile)
+    numedges = controller.totalConnections(cont)
+    numvertex = controller.totalStops(cont)
+    print('Numero de vertices: ' + str(numvertex))
+    print('Numero de arcos: ' + str(numedges))
+    print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))
+
+
+def optionThree(cont):
+    print('El número de componentes conectados es: ' +
+          str(controller.connectedComponents(cont)))
+
+
+def optionFour(cont, initialStation):
+    respuesta=controller.minimumCostPaths(cont, initialStation)
+    print(respuesta[1])
+
+
+def optionFive(cont, destStation):
+    haspath = controller.hasPath(cont, destStation)
+    print('Hay camino entre la estación base : ' +
+          'y la estación: ' + destStation + ': ')
+    print(haspath)
+
+
+def optionSix(cont, destStation):
+    path = controller.minimumCostPath(cont, destStation)
+    if path is not None:
+        pathlen = stack.size(path)
+        print('El camino es de longitud: ' + str(pathlen))
+        while (not stack.isEmpty(path)):
+            stop = stack.pop(path)
+            print(stop)
+    else:
+        print('No hay camino')
+
+
+def optionSeven(cont):
+    maxvert, maxdeg = controller.servedRoutes(cont)
+    print('Estación: ' + maxvert + '  Total rutas servidas: '
+          + str(maxdeg))
+
 
 """
 Menu principal
 """
-while True:
-    printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
 
-    elif int(inputs[0]) == 2:
-        pass
 
-    else:
-        sys.exit(0)
-sys.exit(0)
+def thread_cycle():
+    while True:
+        printMenu()
+        inputs = input('Seleccione una opción para continuar\n>')
+
+        if int(inputs[0]) == 1:
+            print("\nInicializando....")
+            # cont es el controlador que se usará de acá en adelante
+            cont = controller.init()
+
+        elif int(inputs[0]) == 2:
+            optionTwo(cont)
+
+        elif int(inputs[0]) == 3:
+            optionThree(cont)
+
+        elif int(inputs[0]) == 4:
+            msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "
+            initialStation = input(msg)
+            optionFour(cont, initialStation)
+
+        elif int(inputs[0]) == 5:
+            destStation = input("Estación destino (Ej: 15151-10): ")
+            optionFive(cont, destStation)
+
+        elif int(inputs[0]) == 6:
+            destStation = input("Estación destino (Ej: 15151-10): ")
+            optionSix(cont, destStation)
+
+        elif int(inputs[0]) == 7:
+            optionSeven(cont)
+
+        else:
+            sys.exit(0)
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    threading.stack_size(67108864)  # 64MB stack
+    sys.setrecursionlimit(2 ** 20)
+    thread = threading.Thread(target=thread_cycle)
+    thread.start()
