@@ -55,7 +55,7 @@ def loadlanding_points(analyzer):
     servidas en una misma estación.
     """
     servicesfile = cf.data_dir + "landing_points.csv"
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8-sig"),
                                 delimiter=",")
     
     for landing_point in input_file:
@@ -75,7 +75,7 @@ def loadconnections(analyzer):
     servidas en una misma estación.
     """
     servicesfile = cf.data_dir + "connections.csv"
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8-sig"),
                                 delimiter=",")
     
     for connection in input_file:
@@ -87,6 +87,14 @@ def loadconnections(analyzer):
     return analyzer
 def fusion(analyzer):
     model.fusion(analyzer)
+
+def load_capitales(analyzer):
+    servicesfile = cf.data_dir + "countries.csv"
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8-sig"),
+                                delimiter=",")
+    
+    for capital in input_file:
+        model.addcapital(analyzer,capital)
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos
@@ -94,3 +102,11 @@ def fusion(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def totalPoints(analyzer):
+
+    return model.totalPoints(analyzer)
+
+
+def totalConnections(analyzer):
+
+    return model.totalConnections(analyzer)

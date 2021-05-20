@@ -58,6 +58,11 @@ def optionTwo(cont):
     controller.loadlanding_points(cont)
     controller.loadconnections(cont)
     controller.fusion(cont)
+    controller.load_capitales(cont)
+    numedges = controller.totalConnections(cont)
+    numvertex = controller.totalPoints(cont)
+    print('Numero de vertices: ' + str(numvertex))
+    print('Numero de arcos: ' + str(numedges))
 def optionThree(cont):
     pass
     
