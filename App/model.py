@@ -31,6 +31,8 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from DISClib.DataStructures import mapentry as me
+
 assert config
 
 """
@@ -100,18 +102,42 @@ def addlanding_point(analyzer, stopid):
         error.reraise(exp, 'model:addstop')
 
 def loadlanding_points(analyzer,landing_point):
+    lista=lt.newList(datastructure='ARRAY_LIST')
+    landing_point["conecciones"]=lista
     mapa_vertices=analyzer["landing_points"]
     if not m.contains(mapa_vertices,landing_point["landing_point_id"]):
         m.put(mapa_vertices,landing_point["landing_point_id"],landing_point)
 
 def loadconnections(analyzer,connection):
     grafo=analyzer["connections"]
-    
+    mapa=analyzer["landing_points"]
+
     if not gr.containsVertex(grafo,(connection["\ufefforigin"],connection["cable_id"])):
         gr.insertVertex(grafo,(connection["\ufefforigin"],connection["cable_id"]))
+        pareja1=m.get(mapa,connection["\ufefforigin"])
+        valor1=me.getValue(pareja1)
+        lt.addLast(valor1["conecciones"],(connection["\ufefforigin"],connection["cable_id"]))
     if not gr.containsVertex(grafo,(connection["destination"],connection["cable_id"])):
         gr.insertVertex(grafo,(connection["destination"],connection["cable_id"]))
+        pareja2=m.get(mapa,connection["destination"])
+        valor2=me.getValue(pareja2)
+        lt.addLast(valor2["conecciones"],(connection["destination"],connection["cable_id"]))
     gr.addEdge(grafo,(connection["\ufefforigin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),connection["cable_length"])
+def fusion(analyzer):
+
+    lstpoints = m.valueSet(analyzer['landing_points'])
+    for key in lt.iterator(lstpoints):
+        jamon=key["conecciones"]
+        for leche in lt.iterator(jamon):
+            for alpina in lt.iterator(jamon):
+                if leche != alpina:
+                    gr.addEdge(analyzer["connections"],leche,alpina,0.1)
+
+       
+
+
+
+
 
 # Construccion de modelos
 

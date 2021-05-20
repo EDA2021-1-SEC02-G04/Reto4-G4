@@ -85,6 +85,8 @@ def loadconnections(analyzer):
         
     
     return analyzer
+def fusion(analyzer):
+    model.fusion(analyzer)
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos

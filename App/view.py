@@ -57,6 +57,7 @@ def optionTwo(cont):
     
     controller.loadlanding_points(cont)
     controller.loadconnections(cont)
+    controller.fusion(cont)
 def optionThree(cont):
     pass
     
