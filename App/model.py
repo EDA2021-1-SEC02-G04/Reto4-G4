@@ -32,7 +32,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.DataStructures import mapentry as me
-
+from DISClib import haversine as hs
 assert config
 
 """
@@ -63,7 +63,7 @@ def newAnalyzer():
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=comparelanding_points)
+                                              comparefunction=comparevertices)
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
@@ -103,7 +103,7 @@ def addlanding_point(analyzer, stopid):
 
 def loadlanding_points(analyzer,landing_point):
     lista=lt.newList(datastructure='ARRAY_LIST')
-    landing_point["conecciones"]=lista
+    landing_point["conexiones"]=lista
     mapa_vertices=analyzer["landing_points"]
     if not m.contains(mapa_vertices,landing_point["landing_point_id"]):
         m.put(mapa_vertices,landing_point["landing_point_id"],landing_point)
@@ -111,23 +111,25 @@ def loadlanding_points(analyzer,landing_point):
 def loadconnections(analyzer,connection):
     grafo=analyzer["connections"]
     mapa=analyzer["landing_points"]
-
+    peso=0
     if not gr.containsVertex(grafo,(connection["\ufefforigin"],connection["cable_id"])):
         gr.insertVertex(grafo,(connection["\ufefforigin"],connection["cable_id"]))
         pareja1=m.get(mapa,connection["\ufefforigin"])
         valor1=me.getValue(pareja1)
-        lt.addLast(valor1["conecciones"],(connection["\ufefforigin"],connection["cable_id"]))
+        lt.addLast(valor1["conexiones"],(connection["\ufefforigin"],connection["cable_id"]))
     if not gr.containsVertex(grafo,(connection["destination"],connection["cable_id"])):
         gr.insertVertex(grafo,(connection["destination"],connection["cable_id"]))
         pareja2=m.get(mapa,connection["destination"])
         valor2=me.getValue(pareja2)
-        lt.addLast(valor2["conecciones"],(connection["destination"],connection["cable_id"]))
-    gr.addEdge(grafo,(connection["\ufefforigin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),connection["cable_length"])
+        lt.addLast(valor2["conexiones"],(connection["destination"],connection["cable_id"]))
+        if connection["cable_length"]!='n.a.':
+            peso=float(connection["cable_length"][:-3].replace(',',''))
+    gr.addEdge(grafo,(connection["\ufefforigin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),peso)
 def fusion(analyzer):
 
     lstpoints = m.valueSet(analyzer['landing_points'])
     for key in lt.iterator(lstpoints):
-        jamon=key["conecciones"]
+        jamon=key["conexiones"]
         for leche in lt.iterator(jamon):
             for alpina in lt.iterator(jamon):
                 if leche != alpina:
@@ -159,5 +161,14 @@ def comparelanding_points(landing_point1, landing_point2):
         return 0
     elif (landing_point1 > landing_point2["key"]):
         return 1
+    else:
+        return -1
+
+def comparevertices(vertice1, vertice2):
+    """
+    Compara dos estaciones
+    """
+    if (vertice1 == vertice2["key"]):
+        return 0
     else:
         return -1
