@@ -20,11 +20,14 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-import config as cf
+
 import sys
-import controller
-from DISClib.ADT import list as lt
-assert cf
+import config
+import threading
+from App import controller
+from DISClib.ADT import stack
+assert config
+
 
 
 """
@@ -51,30 +54,26 @@ def printMenu():
 
 def optionTwo(cont):
     print("\nCargando datos ....")
-    controller.loadServices(cont, servicefile)
-    numedges = controller.totalConnections(cont)
-    numvertex = controller.totalStops(cont)
-    print('Numero de vertices: ' + str(numvertex))
-    print('Numero de arcos: ' + str(numedges))
-    print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))
-
-
+    
+    controller.loadlanding_points(cont)
+    controller.loadconnections(cont)
 def optionThree(cont):
-
+    pass
+    
 
 
 def optionFour(cont, initialStation):
-
+    pass
 def optionFive(cont, destStation):
-
+    pass
 
 
 def optionSix(cont, destStation):
-
+    pass
 
 
 def optionSeven(cont):
-
+    pass
 
 
 """

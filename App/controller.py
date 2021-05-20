@@ -20,15 +20,71 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+
 import config as cf
-import model
+from App import model
 import csv
+import time
 
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # analyzer es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
 
+
+# ___________________________________________________
+#  Funciones para la carga de datos y almacenamiento
+#  de datos en los modelos
+# ___________________________________________________
+
+
+def loadlanding_points(analyzer):
+    """
+    Carga los datos de los archivos CSV en el modelo.
+    Se crea un arco entre cada par de estaciones que
+    pertenecen al mismo servicio y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes rutas
+    servidas en una misma estación.
+    """
+    servicesfile = cf.data_dir + "landing_points.csv"
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+                                delimiter=",")
+    
+    for landing_point in input_file:
+        model.loadlanding_points(analyzer,landing_point)
+        
+        
+        
+    
+    return analyzer
+def loadconnections(analyzer):
+    """
+    Carga los datos de los archivos CSV en el modelo.
+    Se crea un arco entre cada par de estaciones que
+    pertenecen al mismo servicio y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes rutas
+    servidas en una misma estación.
+    """
+    servicesfile = cf.data_dir + "connections.csv"
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+                                delimiter=",")
+    
+    for connection in input_file:
+        model.loadconnections(analyzer,connection)
+        
+        
+        
+    
+    return analyzer
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos
