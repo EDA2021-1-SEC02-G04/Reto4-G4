@@ -55,14 +55,25 @@ def printMenu():
 def optionTwo(cont):
     print("\nCargando datos ....")
     
-    controller.loadlanding_points(cont)
+    primero=controller.loadlanding_points(cont)
     controller.loadconnections(cont)
     controller.fusion(cont)
-    controller.load_capitales(cont)
+    ultimo=controller.load_capitales(cont)
     numedges = controller.totalConnections(cont)
     numvertex = controller.totalPoints(cont)
+    numpaises = controller.totalPaises(cont)
     print('Numero de vertices: ' + str(numvertex))
     print('Numero de arcos: ' + str(numedges))
+    print('Numero de paises: ' + str(numpaises))
+    print('\n===Primer landing point===')
+    print('Identificador: '+str(primero['landing_point_id'])+str(primero['id']))
+    print('Nombre: '+str(primero['name']))
+    print('Latitud: '+str(primero['latitude']))
+    print('Longitud: '+str(primero['longitude']))
+    print('\n===Ultimo pais===')
+    print('Nombre: '+str(ultimo['CountryName']))
+    print('Población: '+str(ultimo['Population']))
+    print('Usuarios de Internet: '+str(ultimo['Internet users']))
 def optionThree(cont):
     pass
     

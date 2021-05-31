@@ -57,10 +57,14 @@ def loadlanding_points(analyzer):
     servicesfile = cf.data_dir + "landing_points.csv"
     input_file = csv.DictReader(open(servicesfile, encoding="utf-8-sig"),
                                 delimiter=",")
-    
+    primero=True
     for landing_point in input_file:
-        model.loadlanding_points(analyzer,landing_point)
-        
+        if primero==True:
+            primer_landing=landing_point
+            primero=False
+        model.loadlanding_points_distancia(analyzer,landing_point)
+        model.loadlanding_points_internet(analyzer,landing_point)
+    return  primer_landing
         
         
     
@@ -79,22 +83,26 @@ def loadconnections(analyzer):
                                 delimiter=",")
     
     for connection in input_file:
-        model.loadconnections(analyzer,connection)
-        
-        
-        
     
+        model.loadconnections_distancia(analyzer,connection)
+        model.loadconnections_internet(analyzer,connection)
     return analyzer
+
+
 def fusion(analyzer):
-    model.fusion(analyzer)
+    model.fusion_distancia(analyzer)
+    model.fusion_internet(analyzer)
+
 
 def load_capitales(analyzer):
     servicesfile = cf.data_dir + "countries.csv"
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8-sig"),
+    input_file = csv.DictReader(open(servicesfile, encoding='utf-8'),
                                 delimiter=",")
-    
     for capital in input_file:
-        model.addcapital(analyzer,capital)
+        model.addcapital_distancia(analyzer,capital)
+        model.addcapital_internet(analyzer,capital)
+        ultimo=capital
+    return ultimo
 # Inicialización del Catálogo de libros
 
 # Funciones para la carga de datos
@@ -110,3 +118,7 @@ def totalPoints(analyzer):
 def totalConnections(analyzer):
 
     return model.totalConnections(analyzer)
+
+def totalPaises(analyzer):
+
+    return model.totalPaises(analyzer)
