@@ -16,3 +16,6 @@ Este directorio contiene todo el código de base que se entrega para el funciona
 -Test
 Este directorio contiene las pruebas realizadas a los TADs, Estructuras de Datos y Algoritmos.
 
+Estudiante 1:Juan Felipe García 202014961 jf.garciam1
+
+Estudiante 2: Santiago Rodríguez 202020476 s.rodriguez64
