@@ -240,6 +240,11 @@ def totalPaises(analyzer):
     """
     return m.size(analyzer['paises'])
 
+def numero_clusters(analyzer):
+    grafo=analyzer['connections_distancia']
+    componentes=scc.KosarajuSCC(grafo)
+    numcomponentes=scc.connectedComponents(componentes)
+    return numcomponentes
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 

@@ -103,7 +103,10 @@ def load_capitales(analyzer):
         model.addcapital_internet(analyzer,capital)
         ultimo=capital
     return ultimo
-# Inicialización del Catálogo de libros
+
+
+def numero_clusters(analyzer):
+    return model.numero_clusters(analyzer)
 
 # Funciones para la carga de datos
 
