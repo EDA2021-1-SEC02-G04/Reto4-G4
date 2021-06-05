@@ -74,8 +74,14 @@ def optionTwo(cont):
     print('Nombre: '+str(ultimo['CountryName']))
     print('Población: '+str(ultimo['Population']))
     print('Usuarios de Internet: '+str(ultimo['Internet users']))
-def optionThree(cont):
-    pass
+def optionThree(cont,verta,vertb):
+
+    respuesta=controller.connectedComponents(cont,verta,vertb)
+    print('\nEl numero de clusters es: ' + str(respuesta[0]))
+    if respuesta[1]==True:
+        print('Los vértices '+ verta +' y '+vertb+ ' están conectados')
+    else:
+        print('Los vértices '+ verta +' y '+vertb+ ' no están conectados')
     
 def optionFour(cont, initialStation):
     pass
@@ -108,9 +114,11 @@ def thread_cycle():
 
         elif int(inputs[0]) == 2:
             optionTwo(cont)
-
+           
         elif int(inputs[0]) == 3:
-            optionThree(cont)
+            verta=input('Seleccione el vertice 1: ')
+            vertb=input('Seleccione el vertice 2: ')
+            optionThree(cont,verta,vertb)
 
         elif int(inputs[0]) == 4:
             msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "

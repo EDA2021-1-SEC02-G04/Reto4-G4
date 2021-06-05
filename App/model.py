@@ -54,13 +54,17 @@ def newAnalyzer():
                     'connections': None,
                     'components': None,
                     'paths': None,
-                    'paises':None
+                    'paises':None,
+                    'components':None,
+                    'traduccion':None
                     }
 
         analyzer['landing_points'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=comparelanding_points)
-
+        analyzer['traduccion'] = m.newMap(numelements=14000,
+                                     maptype='PROBING',
+                                     comparefunction=comparelanding_points)
         analyzer['connections_distancia'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=14000,
@@ -106,6 +110,9 @@ def loadlanding_points_distancia(analyzer,landing_point):
     mapa_vertices=analyzer["landing_points"]
     if not m.contains(mapa_vertices,landing_point["landing_point_id"]):
         m.put(mapa_vertices,landing_point["landing_point_id"],landing_point)
+    nombre=landing_point["name"].split(',')[0]
+    if not m.contains(analyzer['traduccion'],landing_point["name"]):
+        m.put(analyzer['traduccion'],nombre,landing_point["landing_point_id"])
 
 def loadconnections_distancia(analyzer,connection):
     grafo=analyzer["connections_distancia"]
@@ -239,6 +246,30 @@ def totalPaises(analyzer):
     Retorna el total arcos del grafo
     """
     return m.size(analyzer['paises'])
+
+
+def connectedComponents(analyzer,verta,vertb):
+    """
+    Calcula los componentes conectados del grafo
+    Se utiliza el algoritmo de Kosaraju
+    """
+    analyzer['components'] = scc.KosarajuSCC(analyzer['connections_distancia'])
+    id_a=traduccion(verta,analyzer)
+    id_b=traduccion(vertb,analyzer)
+    pareja1=m.get(analyzer['landing_points'],id_a)
+    cableid1=lt.getElement(me.getValue(pareja1)['conexiones'],1)['vertice'][1]
+    pareja2=m.get(analyzer['landing_points'],id_b)
+    cableid2=lt.getElement(me.getValue(pareja2)['conexiones'],1)['vertice'][1]
+    vertice1=(id_a,cableid1)
+    vertice2=(id_b,cableid2)
+    conectados=scc.stronglyConnected(analyzer['components'], vertice1, vertice2)
+    return (scc.connectedComponents(analyzer['components']),conectados)
+
+
+def traduccion(name,analyzer):
+    x=m.get(analyzer["traduccion"],name)
+    return me.getValue(x)
+    
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

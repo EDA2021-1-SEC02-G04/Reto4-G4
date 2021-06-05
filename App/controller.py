@@ -123,3 +123,7 @@ def totalConnections(analyzer):
 def totalPaises(analyzer):
 
     return model.totalPaises(analyzer)
+
+def connectedComponents(analyzer,verta,vertb):
+
+    return model.connectedComponents(analyzer,verta,vertb)
