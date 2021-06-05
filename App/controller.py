@@ -105,8 +105,6 @@ def load_capitales(analyzer):
     return ultimo
 
 
-def numero_clusters(analyzer):
-    return model.numero_clusters(analyzer)
 
 # Funciones para la carga de datos
 

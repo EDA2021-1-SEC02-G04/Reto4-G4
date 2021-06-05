@@ -75,12 +75,8 @@ def optionTwo(cont):
     print('Población: '+str(ultimo['Population']))
     print('Usuarios de Internet: '+str(ultimo['Internet users']))
 def optionThree(cont):
-    numero_clusters=controller.numero_clusters(cont)
-    print(numero_clusters)
+    pass
     
-    
-
-
 def optionFour(cont, initialStation):
     pass
 def optionFive(cont, destStation):
