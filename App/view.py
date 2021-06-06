@@ -99,13 +99,17 @@ def optionFive(cont, pais1,pais2):
     for landing_point in lt.iterator(respuesta[1]):
         print(landing_point[0] +' - '+landing_point[1]+' con distancia '+ str(landing_point[2]))
         
-def optionSix(cont, destStation):
-    pass
+def optionSix(cont):
+    respuesta=controller.MST(cont)
+    print('El número de vértices en el MST es: '+ str(respuesta[0]))
+    print('El peso total es: '+ str(round(respuesta[1],2))+ 'km')
 
-
-def optionSeven(cont):
-    pass
-
+def optionSeven(cont,vert):
+    respuesta=controller.error_en_vertice(cont,vert)
+    print('Numero de paises afectados: '+ str(respuesta[0]))
+    print('Paises afectados:')
+    for pais in lt.iterator(respuesta[1]):
+        print(pais[0])
 
 """
 Menu principal
@@ -139,11 +143,11 @@ def thread_cycle():
             optionFive(cont,pais1,pais2)
 
         elif int(inputs[0]) == 6:
-            destStation = input("Estación destino (Ej: 15151-10): ")
-            optionSix(cont, destStation)
+            optionSix(cont)
 
         elif int(inputs[0]) == 7:
-            optionSeven(cont)
+            vert=input('Seleccione el vertice: ')
+            optionSeven(cont,vert)
 
         else:
             sys.exit(0)

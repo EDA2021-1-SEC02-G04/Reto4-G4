@@ -24,17 +24,19 @@
  * Dario Correal - Version inicial
  """
 
-from DISClib.DataStructures.edge import weight
+from math import trunc
 import config
-from DISClib.ADT.graph import addEdge, gr
+from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import bellmanford as bf
 from DISClib.Utils import error as error
 from DISClib.DataStructures import mapentry as me
 from DISClib import haversine as hs
+from DISClib.Algorithms.Sorting import mergesort as ms
 assert config
 
 """
@@ -107,8 +109,8 @@ def addStopConnection(analyzer, service):
 
 
 def loadlanding_points_distancia(analyzer,landing_point):
-    lista=lt.newList(datastructure='ARRAY_LIST')
-    landing_point["conexiones"]=lista
+    landing_point["conexiones"]=lt.newList()
+    landing_point["vecinos"]=lt.newList()
     mapa_vertices=analyzer["landing_points"]
     if not m.contains(mapa_vertices,landing_point["landing_point_id"]):
         m.put(mapa_vertices,landing_point["landing_point_id"],landing_point)
@@ -125,15 +127,25 @@ def loadconnections_distancia(analyzer,connection):
         pareja1=m.get(mapa,connection["origin"])
         valor1=me.getValue(pareja1)
         lt.addLast(valor1["conexiones"],{'vertice':(connection["origin"],connection["cable_id"]),"capacityTBPS":connection["capacityTBPS"]})
+        lt.addLast(valor1["vecinos"],(connection["destination"],connection["cable_id"],connection['cable_length'][:-3].replace(',','')))
     if not gr.containsVertex(grafo,(connection["destination"],connection["cable_id"])):
         gr.insertVertex(grafo,(connection["destination"],connection["cable_id"]))
         pareja2=m.get(mapa,connection["destination"])
         valor2=me.getValue(pareja2)
         lt.addLast(valor2["conexiones"],{'vertice':(connection["destination"],connection["cable_id"]),"capacityTBPS":connection["capacityTBPS"]})
+        lt.addLast(valor2["vecinos"],(connection["origin"],connection["cable_id"],connection['cable_length'][:-3].replace(',','')))
     if connection["cable_length"]!='n.a.':
         peso=float(connection["cable_length"][:-3].replace(',',''))
-    gr.addEdge(grafo,(connection["origin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),weight=peso)
-    gr.addEdge(grafo,(connection["destination"],connection["cable_id"]),(connection["origin"],connection["cable_id"]),weight=peso)
+    else:
+        par1=m.get(mapa,connection["origin"])
+        lat1=me.getValue(par1)['latitude']
+        lon1=me.getValue(par1)['longitude']
+        par2=m.get(mapa,connection["destination"])
+        lat2=me.getValue(par2)['latitude']
+        lon2=me.getValue(par2)['longitude']
+        peso=hs.haversine((float(lat1),float(lon1)),((float(lat2),float(lon2))))
+    gr.addEdge(grafo,(connection["origin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),peso)
+    gr.addEdge(grafo,(connection["destination"],connection["cable_id"]),(connection["origin"],connection["cable_id"]),peso)
 
 def fusion_distancia(analyzer):
     lstpoints = m.valueSet(analyzer['landing_points'])
@@ -149,7 +161,19 @@ def addcapital_distancia(analyzer,capital):
     grafo=analyzer["connections_distancia"]
     lista_landing=m.valueSet(analyzer["landing_points"])
     m.put(analyzer['paises'],capital['CountryName'],capital['CapitalName'])
-    if capital['CapitalLatitude']!='':
+    gr.insertVertex(grafo,(capital['CapitalName'],'capital'))
+    for punto in lt.iterator(lista_landing):
+        en_pais=False
+        try:
+            pais=punto['name'].split(',')[1].strip()
+        except:
+            pais=0
+        if pais==capital['CountryName']:
+            en_pais=True
+            dist=hs.haversine((float(capital['CapitalLatitude']),float(capital['CapitalLongitude'])),(float(punto['latitude']),float(punto['longitude'])))
+            gr.addEdge(grafo,(capital['CapitalName'],'capital'),lt.getElement(punto['conexiones'],1)['vertice'],dist)
+            gr.addEdge(grafo,lt.getElement(punto['conexiones'],1)['vertice'],(capital['CapitalName'],'capital'),dist)
+    if en_pais==False:
         menor=None
         dist=None
         for punto in lt.iterator(lista_landing):
@@ -157,7 +181,6 @@ def addcapital_distancia(analyzer,capital):
             if dist==None or distancia<dist :
                 dist=distancia
                 menor=punto
-        gr.insertVertex(grafo,(capital['CapitalName'],'capital'))
         gr.addEdge(grafo,(capital['CapitalName'],'capital'),lt.getElement(menor['conexiones'],1)['vertice'],dist)
         gr.addEdge(grafo,lt.getElement(menor['conexiones'],1)['vertice'],(capital['CapitalName'],'capital'),dist)
 
@@ -321,6 +344,36 @@ def distancia_minima_paises(analyzer,pais1,pais2):
         lt.addLast(camino_final,conexion)
     return distancia_minima,camino_final
 
+def MST(analyzer):
+    analyzer['MST']=prim.PrimMST(analyzer['connections_distancia'])
+    suma=0
+    contador=0
+    for i in lt.iterator(m.valueSet(analyzer['MST']['distTo'])):
+        suma+=i
+        contador+=1
+    return (contador,suma)
+
+
+def error_en_vertice(analyzer,vertice):
+    id_a=traduccion(vertice,analyzer)
+    pareja=m.get(analyzer['landing_points'],id_a)
+    valor=me.getValue(pareja)
+    vecinos=valor['vecinos']
+    mapa=m.newMap()
+    for vecino in lt.iterator(vecinos):
+        landing_point=vecino[0]
+        pareja2=m.get(analyzer['landing_points'],landing_point)
+        valor2=me.getValue(pareja2)
+        pais=valor2['name'].split(',')[1].strip()
+        if not m.contains(mapa,pais):
+            m.put(mapa,pais,(pais,vecino[2]))
+    lista=m.valueSet(mapa)
+    numero_afectados=lt.size(lista)
+    ordenados=ms.sort(lista,cmpkm)
+    return(numero_afectados,ordenados)
+
+        
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 
@@ -344,5 +397,10 @@ def comparevertices(vertice1, vertice2):
         return 0
     else:
         return -1
-
+def cmpkm(lp1, lp2):
+    
+    if (float(lp1[1]) > float(lp2[1])):
+        return True
+    else:
+        return False
 # Funciones de ordenamiento
