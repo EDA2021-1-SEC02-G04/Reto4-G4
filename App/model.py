@@ -29,6 +29,7 @@ from DISClib.ADT.graph import addEdge, gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.DataStructures import mapentry as me
@@ -269,7 +270,33 @@ def connectedComponents(analyzer,verta,vertb):
 def traduccion(name,analyzer):
     x=m.get(analyzer["traduccion"],name)
     return me.getValue(x)
-    
+
+def pais_capital(analyzer,pais):
+    x=m.get(analyzer["paises"],pais)
+    return me.getValue(x)
+
+def mas_conectados(analyzer):
+    lista=lt.newList()
+    maximo=0
+    for landing_point in lt.iterator(m.valueSet(analyzer['landing_points'])):
+        cantidad_vecinos=lt.size(landing_point['conexiones'])
+        if cantidad_vecinos==maximo:
+            lt.addLast(lista,landing_point)
+        elif cantidad_vecinos>maximo:
+            lista=lt.newList()
+            lt.addLast(lista,landing_point)
+            maximo=cantidad_vecinos
+    return (maximo,lista)
+
+def distancia_minima_paises(analyzer,pais1,pais2):
+    capital1=pais_capital(analyzer,pais1)
+    capital2=pais_capital(analyzer,pais2)
+    vertice1=(capital1,'capital')
+    vertice2=(capital2,'capital')
+    analyzer['MST_Dij'] = djk.Dijkstra(analyzer['connections_distancia'],vertice1)
+    distancia_minima=djk.distTo(analyzer['MST_Dij'],vertice2)
+    camino=djk.pathTo(analyzer['MST_Dij'],vertice2)
+    return distancia_minima,camino
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

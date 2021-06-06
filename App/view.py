@@ -26,6 +26,7 @@ import config
 import threading
 from App import controller
 from DISClib.ADT import stack
+from DISClib.ADT import list as lt
 assert config
 
 
@@ -83,10 +84,17 @@ def optionThree(cont,verta,vertb):
     else:
         print('Los vértices '+ verta +' y '+vertb+ ' no están conectados')
     
-def optionFour(cont, initialStation):
-    pass
-def optionFive(cont, destStation):
-    pass
+def optionFour(cont):
+    respuesta=controller.mas_conectados(cont)
+    print('El mayor número de conexiones es: ' + str(respuesta[0]))
+    for landing_point in lt.iterator(respuesta[1]):
+        nombre=landing_point['name'].split(',')[0]
+        pais=landing_point['name'].split(',')[1]
+        print('\nNombre: '+ nombre)
+        print('Pais: '+ pais)
+        print('Identificador: '+ landing_point['landing_point_id'])
+def optionFive(cont, pais1,pais2):
+    print(controller.distancia_minima_paises(cont,pais1,pais2))
 
 
 def optionSix(cont, destStation):
@@ -121,13 +129,12 @@ def thread_cycle():
             optionThree(cont,verta,vertb)
 
         elif int(inputs[0]) == 4:
-            msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "
-            initialStation = input(msg)
-            optionFour(cont, initialStation)
+            optionFour(cont)
 
         elif int(inputs[0]) == 5:
-            destStation = input("Estación destino (Ej: 15151-10): ")
-            optionFive(cont, destStation)
+            pais1=input('Seleccione el pais 1: ')
+            pais2=input('Seleccione el pais 2: ')
+            optionFive(cont,pais1,pais2)
 
         elif int(inputs[0]) == 6:
             destStation = input("Estación destino (Ej: 15151-10): ")

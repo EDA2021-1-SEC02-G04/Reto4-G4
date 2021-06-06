@@ -127,3 +127,11 @@ def totalPaises(analyzer):
 def connectedComponents(analyzer,verta,vertb):
 
     return model.connectedComponents(analyzer,verta,vertb)
+
+def mas_conectados(analyzer):
+
+    return model.mas_conectados(analyzer)
+
+def distancia_minima_paises(analyzer,pais1,pais2):
+
+    return model.distancia_minima_paises(analyzer,pais1,pais2)
