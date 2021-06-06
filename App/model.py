@@ -24,6 +24,7 @@
  * Dario Correal - Version inicial
  """
 
+from DISClib.DataStructures.edge import weight
 import config
 from DISClib.ADT.graph import addEdge, gr
 from DISClib.ADT import map as m
@@ -129,9 +130,8 @@ def loadconnections_distancia(analyzer,connection):
         pareja2=m.get(mapa,connection["destination"])
         valor2=me.getValue(pareja2)
         lt.addLast(valor2["conexiones"],{'vertice':(connection["destination"],connection["cable_id"]),"capacityTBPS":connection["capacityTBPS"]})
-        if connection["cable_length"]!='n.a.':
-            peso=float(connection["cable_length"][:-3].replace(',',''))
-            peso=int(round(peso,0))
+    if connection["cable_length"]!='n.a.':
+        peso=float(connection["cable_length"][:-3].replace(',',''))
     gr.addEdge(grafo,(connection["origin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),weight=peso)
     gr.addEdge(grafo,(connection["destination"],connection["cable_id"]),(connection["origin"],connection["cable_id"]),weight=peso)
 
@@ -298,7 +298,28 @@ def distancia_minima_paises(analyzer,pais1,pais2):
     analyzer['MST_Dij'] = djk.Dijkstra(analyzer['connections_distancia'],vertice1)
     distancia_minima=djk.distTo(analyzer['MST_Dij'],vertice2)
     camino=djk.pathTo(analyzer['MST_Dij'],vertice2)
-    return distancia_minima,camino
+    camino_final=lt.newList()
+    for conexion in lt.iterator(camino):
+        try:
+            int(conexion['vertexA'][0])
+            verticea=conexion['vertexA'][0]
+            pareja1=m.get(analyzer['landing_points'],verticea)
+            nombrea=me.getValue(pareja1)['name'].split(',')[0]
+        except:
+            nombrea=conexion['vertexA'][0]
+
+        try:
+            int(conexion['vertexB'][0])
+            verticeb=conexion['vertexB'][0]
+            pareja2=m.get(analyzer['landing_points'],verticeb)
+            nombreb=me.getValue(pareja2)['name'].split(',')[0]
+        except:
+            nombreb=conexion['vertexB'][0]
+
+
+        conexion=(nombrea,nombreb,conexion['weight'])
+        lt.addLast(camino_final,conexion)
+    return distancia_minima,camino_final
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
