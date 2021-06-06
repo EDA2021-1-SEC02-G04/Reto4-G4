@@ -76,16 +76,20 @@ def optionTwo(cont):
     print('Población: '+str(ultimo['Population']))
     print('Usuarios de Internet: '+str(ultimo['Internet users']))
 def optionThree(cont,verta,vertb):
-
-    respuesta=controller.connectedComponents(cont,verta,vertb)
+    ans=controller.connectedComponents(cont,verta,vertb)
+    respuesta=ans[0]
     print('\nEl numero de clusters es: ' + str(respuesta[0]))
     if respuesta[1]==True:
         print('Los vértices '+ verta +' y '+vertb+ ' están conectados')
     else:
         print('Los vértices '+ verta +' y '+vertb+ ' no están conectados')
+
+    print("Tiempo [ms]: ", f"{ans[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{ans[2]:.3f}")
     
 def optionFour(cont):
-    respuesta=controller.mas_conectados(cont)
+    ans=controller.mas_conectados(cont)
+    respuesta=ans[0]
     print('El mayor número de conexiones es: ' + str(respuesta[0]))
     for landing_point in lt.iterator(respuesta[1]):
         nombre=landing_point['name'].split(',')[0]
@@ -93,24 +97,34 @@ def optionFour(cont):
         print('\nNombre: '+ nombre)
         print('Pais: '+ pais)
         print('Identificador: '+ landing_point['landing_point_id'])
+    print("Tiempo [ms]: ", f"{ans[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{ans[2]:.3f}")
+
 def optionFive(cont, pais1,pais2):
     respuesta=controller.distancia_minima_paises(cont,pais1,pais2)
     print('La distancia total entre '+pais1+' y '+pais2+' es '+ str(respuesta[0]))
     for landing_point in lt.iterator(respuesta[1]):
         print(landing_point[0] +' - '+landing_point[1]+' con distancia '+ str(landing_point[2]))
-        
+    print("Tiempo [ms]: ", f"{ans[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{ans[2]:.3f}")
+
 def optionSix(cont):
-    respuesta=controller.MST(cont)
+    ans=controller.MST(cont)
+    respuesta=ans[0]
     print('El número de vértices en el MST es: '+ str(respuesta[0]))
     print('El peso total es: '+ str(round(respuesta[1],2))+ 'km')
+    print("Tiempo [ms]: ", f"{ans[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{ans[2]:.3f}")
 
 def optionSeven(cont,vert):
-    respuesta=controller.error_en_vertice(cont,vert)
+    ans=controller.error_en_vertice(cont,vert)
+    respuesta=ans[0]
     print('Numero de paises afectados: '+ str(respuesta[0]))
     print('Paises afectados:')
     for pais in lt.iterator(respuesta[1]):
         print(pais[0])
-
+    print("Tiempo [ms]: ", f"{ans[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{ans[2]:.3f}")
 """
 Menu principal
 """

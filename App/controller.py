@@ -125,22 +125,73 @@ def totalPaises(analyzer):
     return model.totalPaises(analyzer)
 
 def connectedComponents(analyzer,verta,vertb):
+    delta_time = -1.0
+    delta_memory = -1.0
 
-    return model.connectedComponents(analyzer,verta,vertb)
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.connectedComponents(analyzer,verta,vertb)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return (respuesta,delta_time,delta_memory)
 
 def mas_conectados(analyzer):
-
-    return model.mas_conectados(analyzer)
+    delta_time = -1.0
+    delta_memory = -1.0
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.mas_conectados(analyzer)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return (respuesta,delta_time,delta_memory)
 
 def distancia_minima_paises(analyzer,pais1,pais2):
-
-    return model.distancia_minima_paises(analyzer,pais1,pais2)
+    delta_time = -1.0
+    delta_memory = -1.0
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.distancia_minima_paises(analyzer,pais1,pais2)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return (respuesta,delta_time,delta_memory)
+    
 
 def MST(analyzer):
-    return model.MST(analyzer)
+    delta_time = -1.0
+    delta_memory = -1.0
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.model.MST(analyzer)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return (respuesta,delta_time,delta_memory)
+
 
 def error_en_vertice(analyzer,vertice):
-    return model.error_en_vertice(analyzer,vertice)
+    delta_time = -1.0
+    delta_memory = -1.0
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.model.MST(analyzer)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return (respuesta,delta_time,delta_memory)
 
 def getTime():
     """
