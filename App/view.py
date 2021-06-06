@@ -94,9 +94,11 @@ def optionFour(cont):
         print('Pais: '+ pais)
         print('Identificador: '+ landing_point['landing_point_id'])
 def optionFive(cont, pais1,pais2):
-    print(controller.distancia_minima_paises(cont,pais1,pais2))
-
-
+    respuesta=controller.distancia_minima_paises(cont,pais1,pais2)
+    print('La distancia total entre '+pais1+' y '+pais2+' es '+ str(respuesta[0]))
+    for landing_point in lt.iterator(respuesta[1]):
+        print(landing_point)
+        
 def optionSix(cont, destStation):
     pass
 

@@ -131,8 +131,9 @@ def loadconnections_distancia(analyzer,connection):
         lt.addLast(valor2["conexiones"],{'vertice':(connection["destination"],connection["cable_id"]),"capacityTBPS":connection["capacityTBPS"]})
         if connection["cable_length"]!='n.a.':
             peso=float(connection["cable_length"][:-3].replace(',',''))
-    gr.addEdge(grafo,(connection["origin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),peso)
-    gr.addEdge(grafo,(connection["destination"],connection["cable_id"]),(connection["origin"],connection["cable_id"]),peso)
+            peso=int(round(peso,0))
+    gr.addEdge(grafo,(connection["origin"],connection["cable_id"]),(connection["destination"],connection["cable_id"]),weight=peso)
+    gr.addEdge(grafo,(connection["destination"],connection["cable_id"]),(connection["origin"],connection["cable_id"]),weight=peso)
 
 def fusion_distancia(analyzer):
     lstpoints = m.valueSet(analyzer['landing_points'])
@@ -158,6 +159,7 @@ def addcapital_distancia(analyzer,capital):
                 menor=punto
         gr.insertVertex(grafo,(capital['CapitalName'],'capital'))
         gr.addEdge(grafo,(capital['CapitalName'],'capital'),lt.getElement(menor['conexiones'],1)['vertice'],dist)
+        gr.addEdge(grafo,lt.getElement(menor['conexiones'],1)['vertice'],(capital['CapitalName'],'capital'),dist)
 
 
 
