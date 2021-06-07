@@ -172,7 +172,7 @@ def MST(analyzer):
     tracemalloc.start()
     start_time = getTime()
     start_memory = getMemory()
-    respuesta=model.model.MST(analyzer)
+    respuesta=model.MST(analyzer)
     stop_memory = getMemory()
     stop_time = getTime()
     delta_time = stop_time - start_time
@@ -186,7 +186,7 @@ def error_en_vertice(analyzer,vertice):
     tracemalloc.start()
     start_time = getTime()
     start_memory = getMemory()
-    respuesta=model.model.MST(analyzer)
+    respuesta=model.error_en_vertice(analyzer,vertice)
     stop_memory = getMemory()
     stop_time = getTime()
     delta_time = stop_time - start_time

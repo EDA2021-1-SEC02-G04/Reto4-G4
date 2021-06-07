@@ -101,7 +101,8 @@ def optionFour(cont):
               "Memoria [kB]: ", f"{ans[2]:.3f}")
 
 def optionFive(cont, pais1,pais2):
-    respuesta=controller.distancia_minima_paises(cont,pais1,pais2)
+    ans=controller.distancia_minima_paises(cont,pais1,pais2)
+    respuesta=ans[0]
     print('La distancia total entre '+pais1+' y '+pais2+' es '+ str(respuesta[0]))
     for landing_point in lt.iterator(respuesta[1]):
         print(landing_point[0] +' - '+landing_point[1]+' con distancia '+ str(landing_point[2]))
@@ -113,6 +114,9 @@ def optionSix(cont):
     respuesta=ans[0]
     print('El número de vértices en el MST es: '+ str(respuesta[0]))
     print('El peso total es: '+ str(round(respuesta[1],2))+ 'km')
+    print('El camino mas largo es:')
+    for landing_point in lt.iterator(respuesta[2]):
+        print(landing_point[0] +' - '+landing_point[1])
     print("Tiempo [ms]: ", f"{ans[1]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{ans[2]:.3f}")
 

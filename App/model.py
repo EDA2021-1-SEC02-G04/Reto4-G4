@@ -26,9 +26,10 @@
 
 from math import trunc
 import config
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import gr, vertices
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
+from DISClib.ADT import stack as st
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Graphs import dijsktra as djk
@@ -37,6 +38,7 @@ from DISClib.Utils import error as error
 from DISClib.DataStructures import mapentry as me
 from DISClib import haversine as hs
 from DISClib.Algorithms.Sorting import mergesort as ms
+import math
 assert config
 
 """
@@ -351,7 +353,37 @@ def MST(analyzer):
     for i in lt.iterator(m.valueSet(analyzer['MST']['distTo'])):
         suma+=i
         contador+=1
-    return (contador,suma)
+    analyzer['Dij']=djk.Dijkstra(analyzer['connections_distancia'],lt.getElement(gr.vertices(analyzer['connections_distancia']),5))
+    maximo=None
+    distancia=0
+    for vertice in lt.iterator(gr.vertices(analyzer['connections_distancia'])):
+        camino=djk.pathTo(analyzer['Dij'],vertice)
+        if camino!=None:
+            if st.size(camino)>distancia and distancia!=math.inf:
+                maximo=camino
+                distancia=st.size(camino)
+    camino_final=lt.newList()
+    for conexion in lt.iterator(camino):
+        try:
+            int(conexion['vertexA'][0])
+            verticea=conexion['vertexA'][0]
+            pareja1=m.get(analyzer['landing_points'],verticea)
+            nombrea=me.getValue(pareja1)['name'].split(',')[0]
+        except:
+            nombrea=conexion['vertexA'][0]
+
+        try:
+            int(conexion['vertexB'][0])
+            verticeb=conexion['vertexB'][0]
+            pareja2=m.get(analyzer['landing_points'],verticeb)
+            nombreb=me.getValue(pareja2)['name'].split(',')[0]
+        except:
+            nombreb=conexion['vertexB'][0]
+
+
+        conexion=(nombrea,nombreb,conexion['weight'])
+        lt.addLast(camino_final,conexion)
+    return (contador,suma,camino_final)
 
 
 def error_en_vertice(analyzer,vertice):
