@@ -179,7 +179,9 @@ def addcapital_distancia(analyzer,capital):
         menor=None
         dist=None
         for punto in lt.iterator(lista_landing):
+            
             distancia=hs.haversine((float(capital['CapitalLatitude']),float(capital['CapitalLongitude'])),(float(punto['latitude']),float(punto['longitude'])))
+            
             if dist==None or distancia<dist :
                 dist=distancia
                 menor=punto
